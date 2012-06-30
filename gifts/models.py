@@ -4,7 +4,8 @@ RELATIONSHIP_CHOICES = (
     ('FRIEND', 'Friend'),
     ('FAMLIY', 'Family'),
     ('ALUMNUS', 'Alumnus/Alumna'),
-    ('STUDENT', 'Student'),
+    ('UNDERGRAD', 'Undergrad'),
+    ('GRADSTUDENT', 'Grad Student'),
 )
 
 
