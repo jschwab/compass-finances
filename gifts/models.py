@@ -52,7 +52,7 @@ class Donation(models.Model):
     fund_number = models.CharField(max_length = 31, null = True, blank = True)
 
     def __unicode__(self):
-        return "{} - {}".format(self.name, self.date)
+        return "${} - {}".format(self.amount, self.date)
 
 class Ask(models.Model):
 
