@@ -1,0 +1,38 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN">
+<html lang="en">
+<head>
+    <title>{% block title %}{% endblock %}</title>
+<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}django_tables2/themes/paleblue/css/screen.css" />
+<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}gifts.css" />
+
+</head>
+<body>
+<div id="topbar">
+<div style="float:left">
+<ul id="navbar">
+  <li><a href={% url home %} style="text-decoration:none;">Home</a></li>
+  <li><a href="#" style="text-decoration:none;">View ></a>
+    <ul>
+      <li><a href={% url contacts %} title="All Contacts">All Contacts</a></li>
+	  <li><a href={% url donations %} title="All Donations">All Donations</a></li>
+	</ul>
+  </li>
+  <li><a href="#" style="text-decoration:none;">Actions ></a>
+    <ul>
+	  <li><a href={% url search %} title="Query">Query</a></li>
+	  <li><a href={% url import %} title="Import">Import</a></li>
+	</ul>
+  </li>
+</ul>
+</div>
+<div style="float:right">
+<ul id="navbar">
+  <li><a href={% url logout %} style="text-decoration:none;">Logout</a></li>
+</ul>
+</div>
+</div>
+<br>
+    {% block content %}{% endblock %}
+    {% block footer %}{% endblock %}
+</body>
+</html>

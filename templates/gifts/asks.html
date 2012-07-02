@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% load render_table from django_tables2 %}
+
+{% block title%}Table{% endblock %}
+
+{% block content %}
+{% render_table table %}
+{% endblock %}
+
+{% block footer %}{% endblock %}

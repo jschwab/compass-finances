@@ -1,0 +1,72 @@
+body {
+  font: normal 14px 'Lucida Grande', Verdana, Helvetica, Arial, sans-serif;
+}
+
+#topbar {
+  color: #EDF3FE;
+  position:relative;
+  font: normal 14px 'Lucida Grande', Verdana, Helvetica, Arial, sans-serif;
+  min-width:800px;
+  margin: 0 auto;
+  background-color: #5B80B2;
+  height:30px;
+  padding-left:0px;
+  padding-right:0px;
+  border-radius: 0px 0px 8px 8px;
+  -moz-border-radius: 0px 0px 8px 8px;
+  -webkit-border-bottom-right-radius: 8px;
+  -webkit-border-bottom-left-radius: 8px;
+}
+
+#topbar a {
+  color: #fff;
+}
+
+ul.errorlist {
+  color: #f00;
+  list-style-type: none;
+  padding: 0;
+  margin:0;
+}
+
+
+#topbar strong {
+  font-weight: bold;
+  /*font-size: 13px;*/
+}
+#navbar {
+   margin: 0;
+   padding: 0 0 0 0;
+   height: 100%;
+   line-height: 100%; }
+#navbar li {
+   list-style: none;
+   float: left; }
+#navbar li a {
+   display: block;
+   padding: 6px 8px;
+   color: #fff;
+   text-decoration: underline; }
+#navbar li:hover a {
+   display: block;
+   z-index: 99;
+   padding: 6px 8px;
+   color: #fff;
+   background-color: #666666; }
+#navbar li ul {
+   display: none;
+   width: 10em; /* Width to help Opera out */
+   background-color: #5B80B2;}
+#navbar li:hover ul, #navbar li.hover ul {
+   display: block;
+   z-index: 99;
+   position: absolute;
+   margin: 0;
+   padding: 5px; }
+#navbar li:hover li, #navbar li.hover li {
+   float: none; }
+#navbar li:hover li a, #navbar li.hover li a {
+   background-color: #5B80B2;
+   color: #ffffff; }
+#navbar li li a:hover {
+   background-color: #666666; }

@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+{% load render_table from django_tables2 %}
+{% block title%}Search Form{% endblock %}
+
+{% block content %}
+<h2>Search Form</h2>
+<form action="/gifts/search/" method="post">{% csrf_token %}
+
+  {{ form.non_field_errors }}
+
+  <h3>Donations</h3>
+
+  <table>
+    <tr>
+      <td></td>
+      <td>{{ form.amount_min.errors }}</td>
+      <td></td>
+      <td>{{ form.amount_max.errors }}</td>
+    </tr>
+    <tr>
+      <td width="140px"><label for="id_amount_min">Amount range:</label></td>
+      <td>{{ form.amount_min }}</td>
+      <td><label for="id_amount_max"> -- </label></td>
+      <td>{{ form.amount_max }}</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>{{ form.donate_date_min.errors }}</td>
+      <td></td>
+      <td>{{ form.donate_date_max.errors }}</td>
+    </tr>
+    <tr>
+      <td width="140px"><label for="id_donate_date_min">Date range:</label></td>
+      <td>{{ form.donate_date_min }}</td>
+      <td><label for="id_donate_date_max"> -- </label></td>
+      <td>{{ form.donate_date_max }}</td>
+    </tr>
+    <tr>
+      <td width="140px"><label for="id_show_non_donors">Show non-donors:</label></td>
+      <td>{{ form.show_non_donors }}</td>
+      <td></td>
+      <td>{{ form.show_non_donors.errors }}</td>
+    </tr>
+  </table>
+
+
+
+
+  <h3>Asks</h3>
+  <table>
+    <tr>
+      <td></td>
+      <td>{{ form.ask_date_min.errors }}</td>
+      <td></td>
+      <td>{{ form.ask_date_max.errors }}</td>
+    </tr>
+    <tr>
+      <td width="140px"><label for="id_ask_date_min">Date range:</label></td>
+      <td>{{ form.ask_date_min }}</td>
+      <td><label for="id_ask_date_max"> -- </label></td>
+      <td>{{ form.ask_date_max }}</td>
+    </tr>
+    <tr>
+      <td width="140px"><label for="id_show_never_asked">Show never-asked:</label></td>
+      <td>{{ form.show_never_asked }}</td>
+      <td></td>
+      <td>{{ form.show_never_asked.errors }}</td>
+    </tr>
+  </table>
+
+
+  <h3>Contact</h3>
+
+  <p>
+    {{ form.has_email.errors }}
+    <label for="id_has_email">Must have email address:</label>
+    {{ form.has_email }}
+  </p>
+
+  <p>
+    {{ form.has_address.errors }}
+    <label for="id_has_address">Must have postal address:</label>
+    {{ form.has_address }}
+  </p>
+
+<input type="submit" value="Display" />
+<input type="submit" name = "download" value="Download" />
+</form>
+
+<h2>Matching Records</h2>
+{% render_table results %}
+
+{% endblock %}
