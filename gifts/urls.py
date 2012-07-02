@@ -2,7 +2,6 @@ from django.conf.urls import patterns, include, url
 from django.views.generic import DetailView, ListView
 from gifts.models import Contact
 from gifts.forms import UploadCSVForm
-from gifts.previews import CSVPreview
 from django import forms
 
 urlpatterns = patterns('gifts.views',
