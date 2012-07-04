@@ -1,13 +1,14 @@
 import csv 
 import django_tables2 as tables
 from django_tables2 import RequestConfig
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render_to_response, render
 from gifts.models import Contact, Donation, Ask
 from django_tables2.utils import A
 from django.contrib.auth.decorators import login_required
-from gifts.forms import SearchForm, UploadCSVForm
+from gifts.forms import SearchForm, UploadCSVForm, CombineContactForm
 from django.core.context_processors import csrf
+from django.forms.models import model_to_dict
 
 class MyCheckBoxColumn(tables.CheckBoxColumn):
     header = tables.Column.header
@@ -233,3 +234,68 @@ def import_csv(request):
     c.update(csrf(request))
 
     return render(request, 'gifts/import.html', c)
+
+@login_required
+def combine(request):
+
+    if request.method == "POST":
+
+        if len(request.POST.getlist('id')) < 2:
+            return HttpResponseRedirect("/gifts/contacts/")
+        
+        # first get the set of contacts that we're going to merge
+        grouped_contacts = Contact.objects.filter(id__in = request.POST.getlist('id'))
+
+        # fields and ids
+        field_list = list(f.name for f in Contact._meta.fields)[1:]
+        ids = list(grouped_contacts.values_list('id', flat = True))
+
+
+        # make a new contact out of the selected values
+        merged_contact_dict = {}
+        for field in field_list:
+            values = grouped_contacts.values_list(field, flat = True)
+            merged_contact_dict[field] = values[ids.index(int(request.POST[field]))]
+        
+        merged_contact = Contact(**merged_contact_dict)
+        merged_contact.save()
+        id = merged_contact.id
+
+        # reassign donations and asks to this new contact and then delete the old one
+        for contact in grouped_contacts:
+            contact.donation_set.all().update(contact = id)
+            contact.ask_set.all().update(contact = id)
+            contact.delete()
+
+        
+        return HttpResponseRedirect("/gifts/contacts/%s/" % id)
+
+    if request.method == "GET" and 'ids' in request.GET:
+        
+        # turn the GET into a query set
+        ids = [int(x) for x in request.GET['ids'].split(",")]
+        qs = Contact.objects.filter(id__in = ids)
+
+        field_list = list(f.name for f in Contact._meta.fields)
+
+        qsv = qs.values_list(*field_list)
+        ids = qs.values_list('id', flat = True)
+
+        new_choices = [zip(ids, x) for x in zip(*qsv)]
+
+        # render a page with buttons
+
+        form = CombineContactForm(new_fields = field_list, 
+                                  new_choices = new_choices)
+
+        c = {'table': ContactTable(qs), 'form' : form}
+
+    else:
+        c = {'table': ContactTable([]), 'form' : ()}
+    
+
+    c.update(csrf(request))
+    return render(request, 'gifts/combine.html', c)
+
+
+

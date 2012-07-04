@@ -1,8 +1,4 @@
 from django.conf.urls import patterns, include, url
-from django.views.generic import DetailView, ListView
-from gifts.models import Contact
-from gifts.forms import UploadCSVForm
-from django import forms
 
 urlpatterns = patterns('gifts.views',
     url(r'^$', 'index', name = 'home'),
@@ -12,4 +8,5 @@ urlpatterns = patterns('gifts.views',
         'contact_record', name = 'contact_record'),
     url(r'^search/$', 'search', name = 'search'),
     url(r'^import/$', 'import_csv', name = 'import'),
+    url(r'^combine/$', 'combine', name = 'combine'),
 )

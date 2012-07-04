@@ -1,6 +1,7 @@
 from django import forms
 from django.forms.extras.widgets import SelectDateWidget
 import datetime
+
 class SearchForm(forms.Form):
     """Simple form to search contacts based on donations/asks"""
 
@@ -32,3 +33,17 @@ class SearchForm(forms.Form):
 
 class UploadCSVForm(forms.Form):
     csvfile  = forms.FileField()
+
+class CombineContactForm(forms.Form):
+
+    def __init__(self, *args, **kwargs):
+        new_fields  = kwargs.pop('new_fields')
+        new_choices = kwargs.pop('new_choices')
+        super(CombineContactForm, self).__init__(*args, **kwargs)
+        
+        for k,v in zip(new_fields, new_choices):
+            if k != "id":
+                self.fields[k] = forms.ChoiceField(choices = v)
+            else:
+                self.fields[k] = forms.MultipleChoiceField(widget = forms.MultipleHiddenInput(), 
+                                                           initial = zip(*v)[0])
