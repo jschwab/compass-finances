@@ -10,11 +10,21 @@ def combine_selected_contacts(modeladmin, request, queryset):
     return HttpResponseRedirect("/gifts/combine/?ct=%s&ids=%s" % (ct.pk, ",".join(selected)))
 
 class ContactAdmin(admin.ModelAdmin):
-    list_display = ['name', 'city', 'state', 'relationship']
+    list_display = ['name', 'city', 'state']
     ordering = ['name']
     actions = [combine_selected_contacts]
 
-admin.site.register(Contact, ContactAdmin)
-admin.site.register(Donation)
-admin.site.register(Ask)
 
+class DonationAdmin(admin.ModelAdmin):
+    list_display = ['date', 'amount', 'contact']
+    ordering = ['date']
+
+
+class AskAdmin(admin.ModelAdmin):
+    list_display = ['date', 'campaign', 'contact']
+    ordering = ['date']
+
+
+admin.site.register(Contact, ContactAdmin)
+admin.site.register(Donation, DonationAdmin)
+admin.site.register(Ask, AskAdmin)
