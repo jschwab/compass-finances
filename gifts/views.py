@@ -90,7 +90,9 @@ def contact_record(request, contact_id):
     contact_table = SingleContactTable(Contact.objects.filter(pk=contact_id))
     donation_table = SingleDonationTable(Donation.objects.filter(contact_id=contact_id))
     ask_table = AskTable(Ask.objects.filter(contact_id=contact_id))
-    RequestConfig(request, paginate = None).configure(contact_table)
+    RequestConfig(request, paginate = False).configure(contact_table)
+    RequestConfig(request, paginate = False).configure(donation_table)
+    RequestConfig(request, paginate = False).configure(ask_table)
     return render(request, 'gifts/contact_detail.html', 
                   {'contact': contact_table,
                    'donation': donation_table,
@@ -205,7 +207,7 @@ def search(request):
         form = SearchForm() # An unbound form
     
 
-    RequestConfig(request, paginate = None).configure(results)
+    RequestConfig(request, paginate = False).configure(results)
     c = {'form': form,
          'results': results}
     c.update(csrf(request))
