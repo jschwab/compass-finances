@@ -21,7 +21,7 @@ class DonationAdmin(admin.ModelAdmin):
 
 
 class AskAdmin(admin.ModelAdmin):
-    list_display = ['date', 'campaign', 'contact']
+    list_display = ['date', 'campaign']
     ordering = ['date']
 
 

@@ -56,7 +56,7 @@ class Donation(models.Model):
 
 class Ask(models.Model):
 
-    contact = models.ForeignKey('Contact')
+    contacts = models.ManyToManyField('Contact')
     date = models.DateField()
     campaign = models.CharField(max_length = 255, blank = True)
     notes = models.CharField(max_length = 2047, blank = True)

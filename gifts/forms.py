@@ -1,5 +1,6 @@
 from django import forms
 from django.forms.extras.widgets import SelectDateWidget
+from gifts.models import Ask
 import datetime
 
 class SearchForm(forms.Form):

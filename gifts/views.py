@@ -61,10 +61,11 @@ class ShortDonationTable(tables.Table):
 
 class AskTable(tables.Table):
     id = tables.Column(visible = False)
-    contact = tables.Column(visible = False)
+    campaign = tables.LinkColumn("ask_record", args=[A("pk")])
 
     class Meta:
         model = Ask
+        sequence = ('campaign',)
         attrs = {'class': 'paleblue'}
 
 @login_required
@@ -89,7 +90,7 @@ def donations(request):
 def contact_record(request, contact_id):
     contact_table = SingleContactTable(Contact.objects.filter(pk=contact_id))
     donation_table = SingleDonationTable(Donation.objects.filter(contact_id=contact_id))
-    ask_table = AskTable(Ask.objects.filter(contact_id=contact_id))
+    ask_table = AskTable(Ask.objects.filter(contacts=contact_id))
     RequestConfig(request, paginate = False).configure(contact_table)
     RequestConfig(request, paginate = False).configure(donation_table)
     RequestConfig(request, paginate = False).configure(ask_table)
@@ -97,11 +98,22 @@ def contact_record(request, contact_id):
                   {'contact': contact_table,
                    'donation': donation_table,
                    'ask': ask_table})
+
+@login_required
+def ask_record(request, ask_id):
+    ask_table = AskTable(Ask.objects.filter(pk = ask_id))
+    contact_table = SingleContactTable(Contact.objects.filter(ask__pk=ask_id))
+    RequestConfig(request, paginate = False).configure(contact_table)
+    RequestConfig(request, paginate = False).configure(ask_table)
+    return render(request, 'gifts/ask_detail.html', 
+                  {'contact': contact_table,
+                   'ask': ask_table})
+                   
 @login_required
 def asks(request):
-    table = AskTable(Gift.objects.all())
-    RequestConfig(request).configure(table)
-    return render(request, 'gifts/asks.html', {'table': table})
+    ask_table = AskTable(Ask.objects.all())
+    RequestConfig(request, paginate = False).configure(ask_table)
+    return render(request, 'gifts/asks.html', {'ask_table': ask_table})
 
 @login_required
 def search(request):
@@ -134,7 +146,7 @@ def search(request):
 
             # first get all the asks
             a = Ask.objects.all()
-            a_all = a.values_list('contact', flat = True)
+            a_all = a.values_list('contacts', flat = True)
 
             # figure out which asks match the critera
 
@@ -145,7 +157,7 @@ def search(request):
                 a = a.filter(date__lte=form.cleaned_data['ask_date_max'])
 
             # get these contact indicies
-            a_ids = a.values_list('contact', flat = True)
+            a_ids = a.values_list('contacts', flat = True)
 
             # now comes some rather annoying set manipulations
             # as we choose which set of contacts to start with
@@ -264,10 +276,13 @@ def combine(request):
         id = merged_contact.id
 
         # reassign donations and asks to this new contact and then delete the old one
+
         for contact in grouped_contacts:
             contact.donation_set.all().update(contact = id)
-            contact.ask_set.all().update(contact = id)
+            for ask in contact.ask_set.all():
+                merged_contact.ask_set.add(ask)
             contact.delete()
+
 
         
         return HttpResponseRedirect("/gifts/contacts/%s/" % id)
