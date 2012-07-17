@@ -147,7 +147,7 @@ def search(request):
                                      form.cleaned_data['amount_max'])
 
             if form.cleaned_data['donate_date_min'] is not None:
-                query = query.exclude(donation__date__lt = 
+                query = query.filter(donation__date__gte = 
                                      form.cleaned_data['donate_date_min'])
 
             if form.cleaned_data['donate_date_max'] is not None:
@@ -167,6 +167,8 @@ def search(request):
                 query = query.exclude(ask__date__gt = 
                                      form.cleaned_data['ask_date_max'])
             
+            query = query.distinct()
+
             # maybe we want a CSV file
 
             if "download" in request.POST:
