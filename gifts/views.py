@@ -138,13 +138,24 @@ def search(request):
             if not form.cleaned_data['show_non_donors']:
                 query = query.exclude(donation__isnull = True)
 
-            if form.cleaned_data['amount_min'] is not None:
+            # decide how to do the date range
+            has_amt_min = form.cleaned_data['amount_min'] is not None
+            has_amt_max = form.cleaned_data['amount_max'] is not None
+
+            if has_amt_min and not has_amt_max:
                 query = query.filter(donation__amount__gte = 
                                      form.cleaned_data['amount_min'])
 
-            if form.cleaned_data['amount_max'] is not None:
+            if has_amt_max and not has_amt_min:
                 query = query.filter(donation__amount__lte = 
                                      form.cleaned_data['amount_max'])
+
+            if has_amt_min and has_amt_max:
+                query = query.filter(donation__amount__range = 
+                                     (form.cleaned_data['amount_min'],
+                                      form.cleaned_data['amount_max']))
+
+            # do the donation date range
 
             if form.cleaned_data['donate_date_min'] is not None:
                 query = query.filter(donation__date__gte = 
