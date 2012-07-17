@@ -147,11 +147,11 @@ def search(request):
                                      form.cleaned_data['amount_max'])
 
             if form.cleaned_data['donate_date_min'] is not None:
-                query = query.filter(donation__date__gte = 
+                query = query.exclude(donation__date__lt = 
                                      form.cleaned_data['donate_date_min'])
 
             if form.cleaned_data['donate_date_max'] is not None:
-                query = query.filter(donation__date__lte = 
+                query = query.exclude(donation__date__gt = 
                                      form.cleaned_data['donate_date_max'])
 
             # figure out which asks match the critera
@@ -160,11 +160,11 @@ def search(request):
                 query = query.exclude(ask__isnull = True)
 
             if form.cleaned_data['ask_date_min'] is not None:
-                query = query.filter(ask__date__gte = 
+                query = query.exclude(ask__date__lt = 
                                      form.cleaned_data['ask_date_min'])
 
             if form.cleaned_data['ask_date_max'] is not None:
-                query = query.filter(ask__date__lte = 
+                query = query.exclude(ask__date__gt = 
                                      form.cleaned_data['ask_date_max'])
             
             # maybe we want a CSV file
