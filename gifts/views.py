@@ -123,65 +123,8 @@ def search(request):
         form = SearchForm(request.POST) # A form bound to the POST data
         if form.is_valid(): # All validation rules pass
 
-            # first get all the donations
-            d = Donation.objects.all()
-            d_all = d.values_list('contact', flat = True)
-
-            # now figure out which donations match the critera
-
-            if form.cleaned_data['amount_min'] is not None:
-                d = d.filter(amount__gte=form.cleaned_data['amount_min'])
-
-            if form.cleaned_data['amount_max'] is not None:
-                d = d.filter(amount__lte=form.cleaned_data['amount_max'])
-
-            if form.cleaned_data['donate_date_min'] is not None:
-                d = d.filter(date__gte=form.cleaned_data['donate_date_min'])
-
-            if form.cleaned_data['donate_date_max'] is not None:
-                d = d.filter(date__lte=form.cleaned_data['donate_date_max'])
-
-            # get these contact indicies
-            d_ids = d.values_list('contact', flat = True)
-
-            # first get all the asks
-            a = Ask.objects.all()
-            a_all = a.values_list('contacts', flat = True)
-
-            # figure out which asks match the critera
-
-            if form.cleaned_data['ask_date_min'] is not None:
-                a = a.filter(date__gte=form.cleaned_data['ask_date_min'])
-
-            if form.cleaned_data['ask_date_max'] is not None:
-                a = a.filter(date__lte=form.cleaned_data['ask_date_max'])
-
-            # get these contact indicies
-            a_ids = a.values_list('contacts', flat = True)
-
-            # now comes some rather annoying set manipulations
-            # as we choose which set of contacts to start with
-            # by default it is all of them
             query  = Contact.objects.all()
 
-            # maybe start with those who have donated
-            if form.cleaned_data['show_non_donors']:
-                # exclude those who have already failed to match
-                query = query.exclude(id__in = set(d_all)-set(d_ids))
-            else:
-                # limit us do just donors who did match
-                query = query.filter(id__in = d_ids)
-
-            # maybe start with those who have been asked
-            if form.cleaned_data['show_never_asked']:
-                # exclude those who have already failed to match
-                query = query.exclude(id__in = set(a_all)-set(a_ids))
-            else:
-                # limit us do asks who did match
-                query = query.filter(id__in = a_ids)
-
-            # now we're ready to apply the contact infomation constraints
-            
             if form.cleaned_data['has_email']:
                 query = query.exclude(email__exact = '')
 
@@ -190,7 +133,40 @@ def search(request):
                                       city__exact = '',
                                       country__exact = '')
 
+            # now figure out which donations match the critera
 
+            if not form.cleaned_data['show_non_donors']:
+                query = query.exclude(donation__isnull = True)
+
+            if form.cleaned_data['amount_min'] is not None:
+                query = query.filter(donation__amount__gte = 
+                                     form.cleaned_data['amount_min'])
+
+            if form.cleaned_data['amount_max'] is not None:
+                query = query.filter(donation__amount__lte = 
+                                     form.cleaned_data['amount_max'])
+
+            if form.cleaned_data['donate_date_min'] is not None:
+                query = query.filter(donation__date__gte = 
+                                     form.cleaned_data['donate_date_min'])
+
+            if form.cleaned_data['donate_date_max'] is not None:
+                query = query.filter(donation__date__lte = 
+                                     form.cleaned_data['donate_date_max'])
+
+            # figure out which asks match the critera
+
+            if not form.cleaned_data['show_never_asked']:
+                query = query.exclude(ask__isnull = True)
+
+            if form.cleaned_data['ask_date_min'] is not None:
+                query = query.filter(ask__date__gte = 
+                                     form.cleaned_data['ask_date_min'])
+
+            if form.cleaned_data['ask_date_max'] is not None:
+                query = query.filter(ask__date__lte = 
+                                     form.cleaned_data['ask_date_max'])
+            
             # maybe we want a CSV file
 
             if "download" in request.POST:
