@@ -1,4 +1,5 @@
-import csv 
+import csv
+import datetime
 import django_tables2 as tables
 from django_tables2 import RequestConfig
 from django.http import HttpResponse, HttpResponseRedirect
@@ -6,10 +7,9 @@ from django.shortcuts import render_to_response, render
 from gifts.models import Contact, Donation, Ask
 from django_tables2.utils import A
 from django.contrib.auth.decorators import login_required
-from gifts.forms import SearchForm, UploadCSVForm, CombineContactForm
+from gifts.forms import SearchForm, UploadCSVForm, CombineContactForm, AskForm
 from django.core.context_processors import csrf
 from django.forms.models import model_to_dict
-
 class MyCheckBoxColumn(tables.CheckBoxColumn):
     header = tables.Column.header
 
@@ -197,7 +197,6 @@ def search(request):
                 response = HttpResponse(mimetype='text/csv')
                 response['Content-Disposition'] = 'attachment;filename="gifts_search.csv"'
                 writer = csv.writer(response)
-                contacts = Contact.objects.all()
                 writer.writerow(["name","street", "city", "state", 
                                  "postcode", "country", "email"])
                 for contact in query:
@@ -209,6 +208,14 @@ def search(request):
                                      contact.country,
                                      contact.email])
                 return response
+
+            elif "newask" in request.POST and query:
+                newask = Ask(date = datetime.date.today())
+                newask.save()
+                for contact in query:
+                    newask.contacts.add(contact)
+                newask.save()
+                return HttpResponseRedirect("/gifts/newask/%s" % (newask.id))
 
             # or maybe we just want to see the results
             else:
@@ -225,6 +232,21 @@ def search(request):
     c.update(csrf(request))
 
     return render(request, 'gifts/search.html', c)
+
+@login_required
+def newask(request, ask_id):
+
+    a = Ask.objects.get(pk = ask_id)
+
+    if request.method == 'POST':
+        form = AskForm(request.POST, instance=a)
+        form.save()
+        return HttpResponseRedirect("/gifts/asks/")
+    else:
+        form = AskForm(instance=a)
+        c = {'form': form}
+        c.update(csrf(request))
+        return render(request, 'gifts/newask.html', c)
 
 @login_required
 def import_csv(request):

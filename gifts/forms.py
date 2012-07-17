@@ -48,3 +48,8 @@ class CombineContactForm(forms.Form):
             else:
                 self.fields[k] = forms.MultipleChoiceField(widget = forms.MultipleHiddenInput(), 
                                                            initial = zip(*v)[0])
+
+class AskForm(forms.ModelForm):
+    class Meta:
+        model = Ask
+        exclude = ("contacts")
