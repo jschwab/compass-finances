@@ -160,7 +160,7 @@ def search(request):
                 query = query.exclude(ask__isnull = True)
 
             if form.cleaned_data['ask_date_min'] is not None:
-                query = query.exclude(ask__date__lt = 
+                query = query.filter(ask__date__gte = 
                                      form.cleaned_data['ask_date_min'])
 
             if form.cleaned_data['ask_date_max'] is not None:
