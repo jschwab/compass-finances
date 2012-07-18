@@ -135,8 +135,8 @@ def search(request):
 
             # now figure out which donations match the critera
 
-            if not form.cleaned_data['show_non_donors']:
-                query = query.exclude(donation__isnull = True)
+            if form.cleaned_data['show_non_donors']:
+                query = query.filter(donation__isnull = True)
 
             # decide how to do the date range
             has_amt_min = form.cleaned_data['amount_min'] is not None
@@ -167,8 +167,8 @@ def search(request):
 
             # figure out which asks match the critera
 
-            if not form.cleaned_data['show_never_asked']:
-                query = query.exclude(ask__isnull = True)
+            if form.cleaned_data['show_never_asked']:
+                query = query.filter(ask__isnull = True)
 
             if form.cleaned_data['ask_date_min'] is not None:
                 query = query.filter(ask__date__gte = 

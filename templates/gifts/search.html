@@ -8,7 +8,7 @@
 
   {{ form.non_field_errors }}
 
-  <h3>Donations</h3>
+  <h3>Donation Constraints</h3>
 
   <table>
     <tr>
@@ -18,25 +18,25 @@
       <td>{{ form.amount_max.errors }}</td>
     </tr>
     <tr>
-      <td width="140px"><label for="id_amount_min">Amount range:</label></td>
+      <td width="350px"><label for="id_amount_min">Has donated an amount in the range:</label></td>
       <td>{{ form.amount_min }}</td>
       <td><label for="id_amount_max"> -- </label></td>
       <td>{{ form.amount_max }}</td>
     </tr>
     <tr>
+      <td width="350px"><label for="id_donate_date_min">Has made a donation more recently than:</label></td>
+      <td>{{ form.donate_date_min }}</td>
       <td></td>
       <td>{{ form.donate_date_min.errors }}</td>
+    </tr>    
+    <tr>
+      <td width="350px"><label for="id_donate_date_max">Has not made a donation more recently than:</label></td>
+      <td>{{ form.donate_date_max }}</td>
       <td></td>
       <td>{{ form.donate_date_max.errors }}</td>
-    </tr>
+    </tr>    
     <tr>
-      <td width="140px"><label for="id_donate_date_min">Date range:</label></td>
-      <td>{{ form.donate_date_min }}</td>
-      <td><label for="id_donate_date_max"> -- </label></td>
-      <td>{{ form.donate_date_max }}</td>
-    </tr>
-    <tr>
-      <td width="140px"><label for="id_show_non_donors">Show non-donors:</label></td>
+      <td width="350px"><label for="id_show_non_donors">Show only contacts who have never donated:</label></td>
       <td>{{ form.show_non_donors }}</td>
       <td></td>
       <td>{{ form.show_non_donors.errors }}</td>
@@ -46,22 +46,22 @@
 
 
 
-  <h3>Asks</h3>
+  <h3>Ask Constraints</h3>
   <table>
     <tr>
+      <td width="350px"><label for="id_ask_date_min">Has been asked more recently than:</label></td>
+      <td>{{ form.ask_date_min }}</td>
       <td></td>
       <td>{{ form.ask_date_min.errors }}</td>
+    </tr>    
+    <tr>
+      <td width="350px"><label for="id_ask_date_max">Has not been asked more recently than:</label></td>
+      <td>{{ form.ask_date_max }}</td>
       <td></td>
       <td>{{ form.ask_date_max.errors }}</td>
-    </tr>
+    </tr>    
     <tr>
-      <td width="140px"><label for="id_ask_date_min">Date range:</label></td>
-      <td>{{ form.ask_date_min }}</td>
-      <td><label for="id_ask_date_max"> -- </label></td>
-      <td>{{ form.ask_date_max }}</td>
-    </tr>
-    <tr>
-      <td width="140px"><label for="id_show_never_asked">Show never-asked:</label></td>
+      <td width="350px"><label for="id_show_never_asked">Show only contacts who have never been asked:</label></td>
       <td>{{ form.show_never_asked }}</td>
       <td></td>
       <td>{{ form.show_never_asked.errors }}</td>
@@ -69,23 +69,28 @@
   </table>
 
 
-  <h3>Contact</h3>
+  <h3>Contact Constraints</h3>
 
-  <p>
-    {{ form.has_email.errors }}
-    <label for="id_has_email">Must have email address:</label>
-    {{ form.has_email }}
-  </p>
+  <table>
+    <tr>
+      <td width="350px"><label for="id_has_email">Show only contacts who have an email address:</label></td>
+      <td>{{ form.has_email }}</td>
+      <td></td>
+      <td>{{ form.has_email.errors }}</td>
+    </tr>
+    <tr>
+      <td width="350px"><label for="id_has_address">Show only contacts who have a postal address:</label></td>
+      <td>{{ form.has_address }}</td>
+      <td></td>
+      <td>{{ form.has_address.errors }}</td>
+    </tr>
+  </table>
 
-  <p>
-    {{ form.has_address.errors }}
-    <label for="id_has_address">Must have postal address:</label>
-    {{ form.has_address }}
-  </p>
+  <br>
 
-<input type="submit" value="Display" />
-<input type="submit" name = "download" value="Download" />
-<input type="submit" name = "newask" value="New Ask" />
+  <input type="submit" value="Display" />
+  <input type="submit" name = "download" value="Download" />
+  <input type="submit" name = "newask" value="New Ask" />
 </form>
 
 <h2>Matching Records</h2>
