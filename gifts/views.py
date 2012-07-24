@@ -70,7 +70,7 @@ class AskTable(tables.Table):
 
 @login_required
 def index(request):
-    donations_table = ShortDonationTable(Donation.objects.order_by('-date')[:5])
+    donations_table = ShortDonationTable(Donation.objects.order_by('-pk')[:10])
     RequestConfig(request, paginate = False).configure(donations_table)
     return render(request, 'gifts/index.html', {'donation': donations_table})
 
